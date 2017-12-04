@@ -20,10 +20,8 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-    
-    
-    
-        
+    private Player player;
+
     /**
      * Create the game and initialise its internal map.
      */
@@ -31,7 +29,7 @@ public class Game
     {
         createRooms();
         parser = new Parser();
-        
+        player = new Player();
     }
 
     /**
@@ -59,9 +57,7 @@ public class Game
                 aisle3,
                 aisle4,
                 backRoom;
-             
-        // create the rooms
-        
+        // create the rooms   
         //Home
         yourRoom = new Room("in your bedroom. have a nap?");
         hallway = new Room("in the hallway");
@@ -70,11 +66,9 @@ public class Game
         kitchen = new Room("in the kitchen");
         fridge = new Room("looking for something in an empty fridge");
         livingRoom = new Room("in the living room");
-        
         //Outside
         jackHererRoad = new Room("outside on JackHerer Road next to your home");
         ammiWay = new Room("on Ammi Way next to the shop");
-        
         //Shop
         entrance = new Room("just entering the shop");
         checkout = new Room(" at the checkouts");
@@ -168,8 +162,6 @@ public class Game
         aisle4.setItem("Chewing gum", chewingGum);
         aisle4.setItem("Sweets", sweet);
         
-        
-
         currentRoom = yourRoom;  // start game outside
     }
 
@@ -228,12 +220,13 @@ public class Game
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
         }
-       /*
-        else if (commandWord.equals("back")) {
-           goRoom("");
+       
+       else if (commandWord.equals("back")) {
+           back();
        }
-       else if (commandWord.equals("pick up")) {
-           goRoom("");
+       /*
+       else if (commandWord.equals("take")) {
+           take();
        }
        else if (commandWord.equals("purchase")) {
            goRoom("");
@@ -281,9 +274,12 @@ public class Game
             System.out.println("There is no door!");
         }
         else {
+            player.addToRoomsVisited(currentRoom);
             currentRoom = nextRoom;
             System.out.println(currentRoom.getLongDescription());
+            
         }
+        
     }
 
     /** 
@@ -300,5 +296,30 @@ public class Game
         else {
             return true;  // signal that we want to quit
         }
+    }
+    
+    private void back()
+    {
+        if (player.isStackEmpty())
+            {
+                System.out.println("you need to visit a room before you go back!!");
+            }
+            else
+            {
+                currentRoom = player.removeFromRoomsVisited();
+                System.out.println(currentRoom.getLongDescription());
+            }
+    }
+    
+    private void take(Command command) 
+    {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Take what?");
+            return;
+        }
+
+        String item = command.getSecondWord();
+        
     }
 }
