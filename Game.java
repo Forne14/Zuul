@@ -19,7 +19,7 @@
 public class Game 
 {
     private Parser parser;
-    private Room currentRoom;
+    private Room currentRoom; 
     private Player player;
 
     /**
@@ -30,6 +30,7 @@ public class Game
         createRooms();
         parser = new Parser();
         player = new Player();
+        play();
     }
 
     /**
@@ -139,28 +140,28 @@ public class Game
         checkout.setExit("4",aisle4);
         
         //create items String name, String description, int weight, double price, boolean usable
-        Items benz = new Items("benz", "a special herb. good for baking with",5,10.0,true);
-        Items keys = new Items("keys", "your house keys",10,0.0,true);
-        Items wallet = new Items("wallet", "your wallet",10,0,false);
-        Items rice = new Items("rice", "plain bag of basmati rice",40,1.10,false);
-        Items sprite = new Items("Sprite", "a 1l bottle of the sprite beverage",50,0.99,false);
-        Items chewingGum = new Items("chewing gum", "a small pack of generic chewing gum. no flavor",8,1.0,false);
-        Items specialBox = new Items("SPECIAL BOX", "a box of the finest [REDACTED]",1000,25000,true);
-        Items ketchup = new Items("Ketchup", "a bottle of ketchup",15,0.60,false);
-        Items sweet = new Items("Sweet", "a pack of haribos",5,1,false);
+        Items benz = new Items("benz", "a special herb. good for baking with",5,10.0,false,false);
+        Items keys = new Items("keys", "your house keys",10,0.0,true, false);
+        Items wallet = new Items("wallet", "your wallet",10,0,true,false);
+        Items rice = new Items("rice", "plain bag of basmati rice",40,1.10,false,true);
+        Items sprite = new Items("sprite", "a 1l bottle of the sprite beverage",50,0.99,false,true);
+        Items chewingGum = new Items("gum", "a small pack of generic chewing gum. no flavor",8,1.0,false,true);
+        Items specialBox = new Items("SPECIAL BOX", "a box of the finest [REDACTED]",1000,25000,false,true);
+        Items ketchup = new Items("ketchup", "a bottle of ketchup",15,0.60,false,true);
+        Items sweet = new Items("sweet", "a pack of haribos",5,1,false,true);
         
         //add items to rooms
         
         //home
-        yourRoom.setItem("Keys", keys);
-        toilet.setItem("Wallet", wallet);
+        yourRoom.setItem(keys);
+        toilet.setItem(wallet);
         
         //shop
-        aisle1.setItem("Rice",rice);
-        aisle2.setItem("Ketchup", ketchup);
-        aisle3.setItem("Sprite", sprite);
-        aisle4.setItem("Chewing gum", chewingGum);
-        aisle4.setItem("Sweets", sweet);
+        aisle1.setItem(rice);
+        aisle2.setItem(ketchup);
+        aisle3.setItem(sprite);
+        aisle4.setItem(chewingGum);
+        aisle4.setItem(sweet);
         
         currentRoom = yourRoom;  // start game outside
     }
@@ -194,7 +195,7 @@ public class Game
         System.out.println("Type 'help' if you need help.");
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
-    }
+    } 
 
     /**
      * Given a command, process (that is: execute) the command.
@@ -224,14 +225,15 @@ public class Game
        else if (commandWord.equals("back")) {
            back();
        }
-       /*
+       
        else if (commandWord.equals("take")) {
-           take();
+           take(command);
        }
+       
        else if (commandWord.equals("purchase")) {
-           goRoom("");
+           purchase(command);
        }
-       */
+      
         
       // else command not recognised.
         return wantToQuit;
@@ -319,7 +321,49 @@ public class Game
             return;
         }
 
-        String item = command.getSecondWord();
-        
+        String itemName = command.getSecondWord().toLowerCase().trim();
+        Items items = currentRoom.findItemName(itemName);
+        if (itemName == null)
+        {
+            System.out.println("This item doesnt exist, please try again");
+        }
+        else if(!items.isTakeable())
+        {
+            System.out.println("you do not have the authority to take this item. try purchasing it instead?");
+        }
+        else if(player.totalInventoryWeight() + items.getWeight() <= player.getMaxInvWeight())
+        {
+            player.addToInventory(items);
+            System.out.println(items.getName() + " has been added to your inventory");
+        }
+    }
+    
+    private void purchase(Command command)
+    {
+       if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("purchase what?");
+            return;
+        } 
+       
+        String itemName = command.getSecondWord().toLowerCase().trim();
+        Items items = currentRoom.findItemName(itemName);
+        if (itemName == null)
+        {
+            System.out.println("This item doesnt exist, please try again");
+        }
+        else if(!items.isBuyable())
+        {
+            System.out.println("This item is not for sale. Try taking it instead?");
+        }
+        else if(player.totalInventoryWeight() + items.getWeight() <= player.getMaxInvWeight() && player.getWalletAmount() >= items.getPriceAsDub())
+        {
+            player.addToInventory(items);
+            System.out.println(items.getName() + " has been bought and added to your inventory");
+        }
+        else
+        {
+            System.out.println("you have insufficient funds to make this purchase.");
+        }
     }
 }

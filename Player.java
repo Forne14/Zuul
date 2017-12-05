@@ -17,7 +17,7 @@ public class Player
     public Player()
     {
         roomsVisited = new Stack<>();
-        wallet = 0.0;
+        wallet = 10.0;
         maxInventoryWeight = 150;
         playerInventory = new ArrayList<>();
         
@@ -43,4 +43,25 @@ public class Player
         playerInventory.add(item);
     }
     
+    public int totalInventoryWeight()
+    {
+        int inventoryWeight = 0;
+        int weight;
+        for(Items item : playerInventory)
+        {
+            weight = item.getWeight(); 
+            inventoryWeight += weight;
+        }
+        return inventoryWeight;
+    }
+    
+    public int getMaxInvWeight()
+    {
+        return maxInventoryWeight;
+    }
+    
+    public double getWalletAmount()
+    {
+        return wallet;
+    }
 }
