@@ -21,6 +21,7 @@ public class Room
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
     private ArrayList<Items> itemList;     // stores items of this room
+    private ArrayList<Characters> characterList; //stores characters of this room
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
@@ -53,6 +54,17 @@ public class Room
     public void removeItem(String name)
     {
         itemList.remove(name);
+        System.out.println("item has been removed");
+    }
+    
+    public void setCharacters(Characters npc){
+        characterList.add(npc);
+    }
+     
+    
+    public void removeCharacters(Characters npc)
+    {
+        characterList.remove(npc);
         System.out.println("item has been removed");
     }
 

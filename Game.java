@@ -149,6 +149,7 @@ public class Game
         Items specialBox = new Items("SPECIAL BOX", "a box of the finest [REDACTED]",1000,25000,false,true);
         Items ketchup = new Items("ketchup", "a bottle of ketchup",15,0.60,false,true);
         Items sweet = new Items("sweet", "a pack of haribos",5,1,false,true);
+        Items teleporter = new Items("teleporter","it looks like a portal gun",0,0,true,false);
         
         //add items to rooms
         
@@ -162,8 +163,14 @@ public class Game
         aisle3.setItem(sprite);
         aisle4.setItem(chewingGum);
         aisle4.setItem(sweet);
+        backRoom.setItem(teleporter);
         
         currentRoom = yourRoom;  // start game outside
+        
+        //creates characters and puts them into rooms
+        Characters mum = new Characters("Mum", true);
+        Characters roadman = new Characters("Roadman",true);
+        Characters bossman = new Characters("Bossman",true);
     }
 
     /**
@@ -336,6 +343,11 @@ public class Game
             player.addToInventory(items);
             System.out.println(items.getName() + " has been added to your inventory");
         }
+        else
+        
+        {
+            System.out.println("You dont seem to be able to carry this item, its too heavy");
+        }
     }
     
     private void purchase(Command command)
@@ -363,7 +375,38 @@ public class Game
         }
         else
         {
-            System.out.println("you have insufficient funds to make this purchase.");
+            System.out.println("you either have insufficient funds to make this purchase or its too heavy");
         }
     }
+    
+    private void talk(Command command)
+    {
+       if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("talk to whom?");
+            return;
+        } 
+       
+        String itemName = command.getSecondWord().toLowerCase().trim();
+        Items items = currentRoom.findItemName(itemName);
+        if (itemName == null)
+        {
+            System.out.println("This item doesnt exist, please try again");
+        }
+        else if(!items.isBuyable())
+        {
+            System.out.println("This item is not for sale. Try taking it instead?");
+        }
+        else if(player.totalInventoryWeight() + items.getWeight() <= player.getMaxInvWeight() && player.getWalletAmount() >= items.getPriceAsDub())
+        {
+            player.addToInventory(items);
+            System.out.println(items.getName() + " has been bought and added to your inventory");
+        }
+        else
+        {
+            System.out.println("you either have insufficient funds to make this purchase or its too heavy");
+        }
+    }
+    
+    
 }

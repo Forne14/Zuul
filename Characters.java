@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 /**
  * Write a description of class Characters here.
  *
@@ -7,13 +7,28 @@
  */
 public class Characters
 {
-    // instance variables - replace the example below with your own
+    String name;
+    boolean hasDialogue;
+    private ArrayList<Items> itemList; 
+    Dialogue speech;
+    
    
-    public Characters()
+    public Characters(String name, Boolean hasDialogue)
     {
-        // initialise instance variables
-       
+        this.name = name;
+        this.hasDialogue = hasDialogue;
+        itemList = new ArrayList<>();
+        speech = new Dialogue();
     }
-
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    
+    
+    
+    
     
 }
