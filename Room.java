@@ -1,6 +1,7 @@
 import java.util.Set;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Class Room - a room in an adventure game.
@@ -22,6 +23,7 @@ public class Room
     private HashMap<String, Room> exits;        // stores exits of this room.
     private ArrayList<Items> itemList;     // stores items of this room
     private ArrayList<Characters> characterList; //stores characters of this room
+    private static ArrayList<Room> teleportRooms;
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
@@ -33,6 +35,8 @@ public class Room
         this.description = description;
         exits = new HashMap<>();
         itemList = new ArrayList<>();
+        characterList = new ArrayList<>();
+        teleportRooms = new ArrayList<>();
     } 
     
     public Items findItemName(String item)
@@ -45,6 +49,30 @@ public class Room
             }
         }
         return null;
+    }
+    
+    public Characters findCharacter(String npc)
+    {
+        for(int i = 0; i < characterList.size(); i++)
+        {
+            if(characterList.get(i).getName().equals(npc))
+            {
+                return characterList.get(i);  
+            }
+        }
+        return null;
+    }
+    
+    public static Room makeRandomRoom()
+    {
+        Random randomRoom = new Random();
+        Room random = teleportRooms.get(randomRoom.nextInt(teleportRooms.size()));
+        return random;
+    }
+    
+    public void setRandomRoom(Room room)
+    {
+        teleportRooms.add(room);
     }
     
     public void setItem(Items items){
@@ -61,7 +89,6 @@ public class Room
         characterList.add(npc);
     }
      
-    
     public void removeCharacters(Characters npc)
     {
         characterList.remove(npc);
@@ -95,7 +122,7 @@ public class Room
      */
     public String getLongDescription()
     {
-        return "You are " + description + ".\n" + getExitString() + ".\n" + getItemString();
+        return "You are " + description + ".\n" + getExitString() + ".\n" + getItemString() + ".\n" + getCharacterString();
     }
 
     /**
@@ -103,24 +130,35 @@ public class Room
      * "Exits: north west".
      * @return Details of the room's exits.
      */
-    private String getExitString() 
+    public String getExitString() 
     {
         String returnString = "Exits:";
         Set<String> keys = exits.keySet();
         for(String exit : keys) {
-            returnString += " " + exit;
+            returnString += " " + exit + ", ";
         }
         return returnString;
     }
     
-    private String getItemString()
+    public String getItemString()
     {
         String returnString = "Items:";
         for(Items i : itemList){
-            returnString += " " + i.getName();
+            returnString += " " + i.getName() + ", " ;
         }
         return returnString;
     }
+    
+    public String getCharacterString()
+    {
+        String returnString = "Characters:";
+         for(Characters i : characterList){
+            returnString += " " + i.getName() + ", ";
+        }
+        return returnString;
+    }
+    
+    
 
     /**
      * Return the room that is reached if we go from this room in direction

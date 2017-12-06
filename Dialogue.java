@@ -18,7 +18,7 @@ public class Dialogue
         
     }
     
-    public void roadmanDialogue()
+    public  void roadmanDialogue() 
     {
         print("whats good my g, you want some food?" );
         print("yo take this, only costs £10");
@@ -29,14 +29,14 @@ public class Dialogue
         print("Thank you baby!");
     }
     
-    public void mumDialogueIntro()
+    public  void mumDialogueIntro() 
     {
-        print("Hello baby, I need you to go to the store and buy some items");
+        print("Mum: Hello baby, I need you to go to the store and buy some items");
         print("I've talked to bossman and he's reserved all the items you want. go to the store and buy them please");
         print("Heres some money");
     }
 
-    public void print(String p)
+    public  void print(String p)
     {
         System.out.println(p);
     }

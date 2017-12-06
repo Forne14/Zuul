@@ -20,7 +20,8 @@ public class CommandWords
         "back",
         "take",
         "purchase",
-        "talk"
+        "talk",
+        "show"
     };
 
     /**

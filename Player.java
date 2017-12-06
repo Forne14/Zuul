@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Stack;
+import java.text.NumberFormat;
 
 public class Player
 {
@@ -17,7 +18,7 @@ public class Player
     public Player()
     {
         roomsVisited = new Stack<>();
-        wallet = 10.0;
+        wallet = 0.0;
         maxInventoryWeight = 150;
         playerInventory = new ArrayList<>();
         
@@ -41,6 +42,22 @@ public class Player
     public void addToInventory(Items item)
     {
         playerInventory.add(item);
+    }
+    
+    public void addToWallet(double money)
+    {
+        wallet += money;
+        NumberFormat moneyformat = NumberFormat.getCurrencyInstance();
+        String moneyString = moneyformat.format(wallet);
+        System.out.println(moneyString + " has been added to your wallet");
+    }
+    
+    public void removeFromWallet(double money)
+    {
+        wallet -= money;
+        NumberFormat moneyformat = NumberFormat.getCurrencyInstance();
+        String moneyString = moneyformat.format(wallet);
+        System.out.println(moneyString + " has been removed to your wallet");
     }
     
     public int totalInventoryWeight()

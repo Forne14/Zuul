@@ -26,9 +26,20 @@ public class Characters
         return name;
     }
     
+    public boolean getHasDialogue() 
+    {
+        return hasDialogue;
+    }
     
-    
-    
-    
-    
+    public void generateResponse(String npc) 
+    {
+         switch(npc)
+         {
+             case "mum": speech.mumDialogueIntro();
+             break;
+             case "roadman": speech.roadmanDialogue();
+             break;
+             
+            }
+    }
 }
