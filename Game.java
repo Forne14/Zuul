@@ -1,10 +1,8 @@
 
 /**
- *  This class is the main class of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.  Users 
- *  can walk around some scenery. That's all. It should really be extended 
- *  to make it more interesting!
- * 
+ *  This class is the main class of the "Living in the ends" application based of "World of Zuul". 
+ *  "Living in the ends" is a very simple, text based slice-of-life game.  Users 
+ *  can walk around some scenery. That's all. 
  *  To play this game, create an instance of this class and call the "play"
  *  method.
  * 
@@ -12,25 +10,26 @@
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Yassine Lutumba
+ * @version 2017.12.08
  */
 
 public class Game 
 {
-    private Parser parser;
-    private Room currentRoom; 
-    private Player player;
+    private Parser parser; //field variable to hold the Parser
+    private Room currentRoom; //field variable to store the current room the player is in
+    private Player player; // field variable to store an instance of player
+    boolean wantToQuit; //field variable so i could use it to end the game
 
     /**
      * Create the game and initialise its internal map.
      */
     public Game() 
     {
-        createRooms();
-        parser = new Parser();
-        player = new Player();
-        play();
+        createRooms(); //method call to create rooms
+        parser = new Parser(); //creation of parser
+        player = new Player(); //creation of player
+        play(); //method call to play
     }
 
     /**
@@ -149,12 +148,13 @@ public class Game
         Items specialBox = new Items("SPECIAL BOX", "a box of the finest [REDACTED]",1000,25000,false,true);
         Items ketchup = new Items("ketchup", "a bottle of ketchup",15,0.60,false,true);
         Items sweet = new Items("sweet", "a pack of haribos",5,1,false,true);
-        Items teleporter = new Items("teleporter","it looks like a portal gun",0,0,true,false);
+        Items impossible = new Items("impossible","you cant pick it up. purely for testing reasons!",151,0.0,true,false);
         
         //add items to rooms
         
         //home
         yourRoom.setItem(keys);
+        yourRoom.setItem(impossible);
         toilet.setItem(wallet);
         
         //shop
@@ -163,7 +163,7 @@ public class Game
         aisle3.setItem(sprite);
         aisle4.setItem(chewingGum);
         aisle4.setItem(sweet);
-        backRoom.setItem(teleporter);
+
         
         currentRoom = yourRoom;  // start game outside
         
@@ -232,7 +232,9 @@ public class Game
      */
     private boolean processCommand(Command command) 
     {
-        boolean wantToQuit = false;
+        wantToQuit = false;
+        
+        //if the command doesnt exist then error message given
 
         if(command.isUnknown()) {
             System.out.println("I don't know what you mean...");
@@ -240,6 +242,7 @@ public class Game
         }
 
         String commandWord = command.getCommandWord();
+        //execute command methods
         if (commandWord.equals("help")) {
             printHelp();
         }
@@ -340,6 +343,9 @@ public class Game
         }
     }
     
+    /***
+     * "back" was entered. check to see what rooms they have visited and send them to their previous room
+     */
     private void back()
     {
         if (player.isStackEmpty())
@@ -353,6 +359,11 @@ public class Game
             }
     }
     
+    /***
+     * take command. this method checks to see what item is being taken, if that item exists in the room and then adds it to the player inventory.
+     * checks to see if player has enough space in their inventory.
+     * if no items exist then an error message is given
+     */
     private void take(Command command) 
     {
         if(!command.hasSecondWord()) {
@@ -382,7 +393,11 @@ public class Game
             System.out.println("You dont seem to be able to carry this item, its too heavy");
         }
     }
-    
+    /***
+     * purchase has been entered by the user. this method checks to see if item is for sale and then sees if player has the necessary funds
+     * money will be removed from the wallet equal to the amount of the item
+     * item will be added to inventory
+     */
     private void purchase(Command command)
     {
        if(!command.hasSecondWord()) {
@@ -405,6 +420,7 @@ public class Game
         {
             player.addToInventory(items);
             System.out.println(items.getName() + " has been bought and added to your inventory");
+            player.removeFromWallet(items.getPriceAsDub());  
             System.out.println("Bossman: Thank you, come again!");
         }
         else
@@ -413,6 +429,11 @@ public class Game
         }
     }
     
+    /***
+     * talk has been entered as a command. this method checks to see which character is being talked to and then prints out the appropriate dialogue
+     * under special conditions the win condition can be triggered through this method
+     * 
+     */
     private void talk(Command command)
     {
        if(!command.hasSecondWord()) {
@@ -431,8 +452,19 @@ public class Game
         {
             if(characterName.equals("mum"))
             {
-                npc.generateResponse(characterName); 
-                player.addToWallet(5.0);
+                if(player.getInventorySize() > 3)
+                {
+                    npc.generateWinDialogue();
+                    player.emptyInventory();
+                    System.out.println("all items have been removed from inventory");
+                    System.out.println("Well done on completing this game. \n I hope you've had fun playing \n Yassine Lutumba 2017");
+                    wantToQuit = true;
+                }
+                else
+                {
+                    npc.generateResponse(characterName); 
+                    player.addToWallet(5.0);
+                }
             }
             else if(characterName.equals("roadman"))
             {
@@ -447,7 +479,9 @@ public class Game
             
         }
     }
-    
+    /***
+     * show has been entered as a command. this method displays information on items, exits, characters, bag and wallet
+     */
     private void show(Command command)
     {
        if(!command.hasSecondWord()) {
@@ -484,7 +518,15 @@ public class Game
             case "characters" :
                             System.out.println(currentRoom.getCharacterString()); 
                             break;
-            default:        System.out.println("What you want to see doesnt exist. remember you can only use show for items exits and characters");
+            case "bag" :     if(player.getInventorySize() == 0)
+                                {System.out.println("your bag is empty");}
+                                else{System.out.println(player.showItemsInInventory());}
+                            break;
+            case "money" :
+                            System.out.println("you have " +player.getWalletAmountAsString() + " on you"); 
+                            break;
+                                
+            default:        System.out.println("What you want to see doesnt exist. remember you can only use show for items exits characters, bag and money");
                             break;
         }
     }

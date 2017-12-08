@@ -13,8 +13,8 @@ import java.util.Random;
  * connected to other rooms via exits.  For each existing exit, the room 
  * stores a reference to the neighboring room.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Yassine
+ * @version 2017.02.29
  */
 
 public class Room 
@@ -38,7 +38,10 @@ public class Room
         characterList = new ArrayList<>();
         teleportRooms = new ArrayList<>();
     } 
-    
+    /***
+     * this method runs a loop on all items in the itemList array and 
+     * then checks to see if there exists an item with the same name as what is given in the parameters
+     */
     public Items findItemName(String item)
     {
         for(int i = 0; i < itemList.size(); i++)
@@ -50,7 +53,10 @@ public class Room
         }
         return null;
     }
-    
+    /***
+     * this method runs a loop on all characters in the characterList array and 
+     * then checks to see if there exists a character with the same name as what is given in the parameters
+     */
     public Characters findCharacter(String npc)
     {
         for(int i = 0; i < characterList.size(); i++)
@@ -62,33 +68,45 @@ public class Room
         }
         return null;
     }
-    
+    /**
+     * this method creates a random room by getting a room in the teleportRooms list with a randomly generated index
+     */
     public static Room makeRandomRoom()
     {
         Random randomRoom = new Random();
         Room random = teleportRooms.get(randomRoom.nextInt(teleportRooms.size()));
         return random;
     }
-    
+    /**
+     * this method adds a room to the teleport room array list
+     */
     public void setRandomRoom(Room room)
     {
         teleportRooms.add(room);
     }
-    
+    /**
+     * this method sets an item into the itemlist array
+     */
     public void setItem(Items items){
         itemList.add(items);
     }
-    
+    /**
+     * this method removes an item from the itemlist array
+     */
     public void removeItem(String name)
     {
         itemList.remove(name);
         System.out.println("item has been removed");
     }
-    
+    /***
+     * this method sets a character into the characterlist array
+     */
     public void setCharacters(Characters npc){
         characterList.add(npc);
     }
-     
+     /***
+      * this method removes a character from the character list array
+      */
     public void removeCharacters(Characters npc)
     {
         characterList.remove(npc);
@@ -139,16 +157,24 @@ public class Room
         }
         return returnString;
     }
-    
+     /**
+     * Return a string describing the room's items, for example
+     * "Items: gum".
+     * @return Details of the room's items.
+     */
     public String getItemString()
     {
         String returnString = "Items:";
         for(Items i : itemList){
-            returnString += " " + i.getName() + ", " ;
+            returnString += " " + i.getName() + " | " + i.getDescription() + "\n";
         }
         return returnString;
     }
-    
+     /**
+     * Return a string describing the room's characters, for example
+     * "Characters: mum".
+     * @return Details of the room's characters.
+     */
     public String getCharacterString()
     {
         String returnString = "Characters:";

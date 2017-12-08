@@ -1,5 +1,10 @@
-Project: zuul-better
-Authors: Michael Kölling and David J. Barnes
+Project: living-in-the-end
+Authors: Yassine Lutumba
+------------------------------------------------------------------------------
+Living in the ends" is a very simple, text based slice-of-life game based of the "world of zuul" game.  Users 
+ *  can walk around some scenery. That's all.
+ 
+-----------------------------------------------------------------------------
 
 This project is part of the material for the book
 

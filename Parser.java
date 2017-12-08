@@ -1,8 +1,8 @@
 import java.util.Scanner;
 
 /**
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
+ * This class is part of the "Living in the ends" application. 
+ * "Living in the ends" is a very simple, text based adventure game.  
  * 
  * This parser reads user input and tries to interpret it as an "Adventure"
  * command. Every time it is called it reads a line from the terminal and
@@ -13,8 +13,8 @@ import java.util.Scanner;
  * the known commands, and if the input is not one of the known commands, it
  * returns a command object that is marked as an unknown command.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Michael Kölling and David J. Barnes 
+ * @version @version 2017.12.08
  */
 public class Parser 
 {
@@ -38,6 +38,7 @@ public class Parser
         String inputLine;   // will hold the full input line
         String word1 = null;
         String word2 = null;
+        String word3 = null;
 
         System.out.print("> ");     // print prompt
 
@@ -49,17 +50,19 @@ public class Parser
             word1 = tokenizer.next();      // get first word
             if(tokenizer.hasNext()) {
                 word2 = tokenizer.next();      // get second word
-                // note: we just ignore the rest of the input line.
+                if(tokenizer.hasNext()) {
+                    word3 = tokenizer.next(); // get third word
+                }
             }
         }
 
         // Now check whether this word is known. If so, create a command
         // with it. If not, create a "null" command (for unknown command).
         if(commands.isCommand(word1)) {
-            return new Command(word1, word2);
+            return new Command(word1, word2, word3); 
         }
         else {
-            return new Command(null, word2); 
+            return new Command(null, word2, word3);  
         }
     }
 
