@@ -385,6 +385,7 @@ public class Game
         else if(player.totalInventoryWeight() + items.getWeight() <= player.getMaxInvWeight())
         {
             player.addToInventory(items);
+            currentRoom.removeItem(items);
             System.out.println(items.getName() + " has been added to your inventory");
         }
         else

@@ -93,10 +93,10 @@ public class Room
     /**
      * this method removes an item from the itemlist array
      */
-    public void removeItem(String name)
+    public void removeItem(Items items)
     {
-        itemList.remove(name);
-        System.out.println("item has been removed");
+        itemList.remove(items);
+        System.out.println("item has been removed from the room");
     }
     /***
      * this method sets a character into the characterlist array
